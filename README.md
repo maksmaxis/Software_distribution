@@ -3,7 +3,7 @@
 ```
 Cборка пакетов из исходников
 OTUS home work nginx src
-CentOS Linux release Stream 
+CentOS Stream release 8
 rpmbuilder - vagrant vm
 ```
 
@@ -176,4 +176,59 @@ Nov 28 16:16:52 rpmbuilder systemd[1]: Starting nginx - high performance web ser
 Nov 28 16:16:52 rpmbuilder systemd[1]: nginx.service: Can't open PID file /var/run/nginx.pid (yet?) after start: No such file or directory
 Nov 28 16:16:52 rpmbuilder systemd[1]: Started nginx - high performance web server.
 
+```
+Проверяем репозиторий:
+
+```
+[root@rpmbuilder ~]# ll /usr/share/nginx/html/repo/
+total 5108
+-rw-r--r--. 1 root root 5222976 Feb 16  2022 percona-orchestrator-3.2.6-2.el8.x86_64.rpm
+drwxr-xr-x. 2 root root    4096 Nov 28 17:06 repodata
+```
+
+Проверяем директиву:
+
+```
+[root@rpmbuilder ~]# grep -C 2 autoindex /etc/nginx/conf.d/default.conf 
+        root   /usr/share/nginx/html;
+        index  index.html index.htm;
+        autoindex on;
+    }
+```
+С помощью команды curl проверяем наш репозиторий:
+
+```
+http://localhost/repo/
+```
+Output:
+```
+[root@rpmbuilder ~]# curl -a http://localhost/repo/
+<html>
+<head><title>Index of /repo/</title></head>
+<body>
+<h1>Index of /repo/</h1><hr><pre><a href="../">../</a>
+<a href="repodata/">repodata/</a>                                          28-Nov-2022 17:06                   -
+<a href="percona-orchestrator-3.2.6-2.el8.x86_64.rpm">percona-orchestrator-3.2.6-2.el8.x86_64.rpm</a>        16-Feb-2022 15:57             5222976
+</pre><hr></body>
+</html>
+
+```
+
+Убедимся что репозиторий подключился и посмотрим что в нем есть:
+
+```
+yum repolist enabled | grep otus
+```
+Output:
+```
+[root@rpmbuilder ~]# yum repolist enabled | grep otus
+otus               otus-linux
+```
+```
+yum list | grep otus
+```
+Output:
+```
+[root@rpmbuilder ~]# yum list | grep otus
+percona-orchestrator.x86_64 
 ```
