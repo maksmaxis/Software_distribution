@@ -198,7 +198,7 @@ drwxr-xr-x. 2 root root    4096 Nov 28 17:06 repodata
 С помощью команды curl проверяем наш репозиторий:
 
 ```
-http://localhost/repo/
+curl -a http://localhost/repo/
 ```
 Output:
 ```
